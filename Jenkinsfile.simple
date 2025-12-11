@@ -1,0 +1,42 @@
+// AMTD - Simple Jenkinsfile
+// Simplified pipeline using shared library
+
+@Library('amtd-shared-library') _
+
+pipeline {
+    agent any
+
+    parameters {
+        string(
+            name: 'APPLICATION',
+            defaultValue: 'juice-shop',
+            description: 'Application to scan'
+        )
+        choice(
+            name: 'SCAN_TYPE',
+            choices: ['full', 'quick', 'incremental'],
+            description: 'Scan type'
+        )
+    }
+
+    stages {
+        stage('Security Scan') {
+            steps {
+                script {
+                    // Use shared library function
+                    amtdScan(
+                        application: params.APPLICATION,
+                        scanType: params.SCAN_TYPE,
+                        notifications: true
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Scan completed"
+        }
+    }
+}

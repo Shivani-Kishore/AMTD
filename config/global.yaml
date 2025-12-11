@@ -1,0 +1,227 @@
+# AMTD Global Configuration
+# This file contains system-wide default settings
+
+system:
+  name: "AMTD Security Scanner"
+  version: "1.0.0"
+  environment: "${ENVIRONMENT:-development}"
+
+  # Logging configuration
+  logging:
+    level: "${LOG_LEVEL:-info}"
+    format: "${LOG_FORMAT:-json}"
+    output: "stdout"
+
+    # Log rotation
+    rotation:
+      max_size: 100  # MB
+      max_files: 10
+      max_age: 30  # days
+
+    # Log to file
+    file:
+      enabled: true
+      path: "logs/amtd.log"
+
+  # Performance settings
+  performance:
+    max_concurrent_scans: "${MAX_CONCURRENT_SCANS:-5}"
+    worker_threads: "${WORKER_THREADS:-4}"
+    default_timeout: "${REQUEST_TIMEOUT:-30}"
+    scan_timeout: "${DEFAULT_SCAN_TIMEOUT:-7200}"
+
+  # Security settings
+  security:
+    # Rate limiting
+    rate_limiting:
+      enabled: "${ENABLE_RATE_LIMITING:-false}"
+      requests_per_minute: 60
+      requests_per_hour: 1000
+
+    # API security
+    api:
+      token_expiry: "${JWT_EXPIRATION_HOURS:-24}"
+      require_https: false
+      cors_enabled: true
+      cors_origins: ["*"]
+
+    # Data encryption
+    encryption:
+      algorithm: "AES-256-GCM"
+      key: "${ENCRYPTION_KEY}"
+
+  # Database configuration
+  database:
+    host: "${DB_HOST:-localhost}"
+    port: "${DB_PORT:-5432}"
+    name: "${DB_NAME:-amtd}"
+    user: "${DB_USER:-amtd}"
+    password: "${DB_PASSWORD}"
+
+    # Connection pool
+    pool:
+      min_size: 5
+      max_size: "${DB_POOL_SIZE:-20}"
+      max_overflow: "${DB_MAX_OVERFLOW:-10}"
+      timeout: "${DB_POOL_TIMEOUT:-30}"
+
+    # SSL
+    ssl_mode: "prefer"
+
+  # Object storage configuration
+  storage:
+    type: "minio"  # minio or s3
+    endpoint: "${MINIO_ENDPOINT:-localhost:9000}"
+    access_key: "${MINIO_ROOT_USER:-admin}"
+    secret_key: "${MINIO_ROOT_PASSWORD}"
+    bucket: "${MINIO_BUCKET:-amtd-reports}"
+    secure: "${MINIO_SECURE:-false}"
+    region: "${AWS_REGION:-us-east-1}"
+
+  # Redis configuration
+  redis:
+    host: "${REDIS_HOST:-localhost}"
+    port: "${REDIS_PORT:-6379}"
+    db: "${REDIS_DB:-0}"
+    password: "${REDIS_PASSWORD}"
+
+  # Jenkins integration
+  jenkins:
+    url: "${JENKINS_URL:-http://localhost:8080}"
+    user: "${JENKINS_ADMIN_USER:-admin}"
+    token: "${JENKINS_API_TOKEN}"
+    timeout: 300
+
+  # ZAP Scanner configuration
+  scanner:
+    image: "${ZAP_IMAGE:-ghcr.io/zaproxy/zaproxy:stable}"
+    version: "${ZAP_VERSION:-2.14.0}"
+    memory_limit: "2g"
+    cpu_limit: "2"
+    network: "amtd-network"
+
+# Default scan configuration
+scan:
+  # Default scan type
+  type: "full"  # full, quick, incremental
+
+  # Default timeout (seconds)
+  timeout: 7200
+
+  # Default policy
+  policy: "default"
+
+  # Retry configuration
+  retry:
+    max_attempts: 3
+    backoff_multiplier: 2
+    max_backoff: 300
+
+  # Resource limits
+  resources:
+    memory: "2Gi"
+    cpu: "2"
+
+# Default notification configuration
+notifications:
+  # Email
+  email:
+    enabled: "${SMTP_ENABLED:-false}"
+    smtp:
+      host: "${SMTP_HOST:-smtp.gmail.com}"
+      port: "${SMTP_PORT:-587}"
+      tls: "${SMTP_USE_TLS:-true}"
+      username: "${SMTP_USERNAME}"
+      password: "${SMTP_PASSWORD}"
+    from:
+      name: "${SMTP_FROM_NAME:-AMTD Security Scanner}"
+      address: "${SMTP_FROM_EMAIL:-security@example.com}"
+
+  # Slack
+  slack:
+    enabled: "${SLACK_ENABLED:-false}"
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channel: "${SLACK_CHANNEL:-#security-alerts}"
+    username: "${SLACK_USERNAME:-AMTD Security Bot}"
+    icon_emoji: ":shield:"
+
+  # GitHub
+  github:
+    enabled: "${GITHUB_ENABLED:-false}"
+    token: "${GITHUB_TOKEN}"
+    owner: "${GITHUB_OWNER}"
+    repo: "${GITHUB_REPO}"
+    webhook_secret: "${GITHUB_WEBHOOK_SECRET}"
+
+# Report configuration
+reports:
+  # Default formats to generate
+  formats: ["html", "json", "pdf"]
+
+  # Report retention (days)
+  retention_days: "${REPORT_RETENTION_DAYS:-365}"
+
+  # Report branding
+  branding:
+    organization: "${ORG_NAME:-Your Organization}"
+    logo_url: "${ORG_LOGO_URL}"
+    contact_email: "${ORG_CONTACT_EMAIL:-security@example.com}"
+
+  # PDF generation
+  pdf:
+    page_size: "A4"
+    orientation: "portrait"
+    include_toc: true
+    include_executive_summary: true
+
+# Compliance settings
+compliance:
+  # Standards to track
+  standards:
+    - pci-dss
+    - hipaa
+    - soc2
+    - owasp-top-10
+
+  # Report frequency
+  report_schedule: "0 0 1 * *"  # Monthly
+
+# Metrics and monitoring
+monitoring:
+  # Prometheus
+  prometheus:
+    enabled: "${PROMETHEUS_ENABLED:-true}"
+    port: "${PROMETHEUS_PORT:-9090}"
+    metrics_path: "/metrics"
+
+  # Health check
+  health_check:
+    enabled: true
+    interval: 30
+    timeout: 10
+
+  # Alerting
+  alerts:
+    # Alert on high failure rate
+    scan_failure_threshold: 0.10  # 10%
+
+    # Alert on high vulnerability count
+    critical_vuln_threshold: 5
+    high_vuln_threshold: 20
+
+# Feature flags
+features:
+  dashboard: "${FEATURE_DASHBOARD:-true}"
+  api: "${FEATURE_API:-true}"
+  github_integration: "${FEATURE_GITHUB_INTEGRATION:-true}"
+  slack_integration: "${FEATURE_SLACK_INTEGRATION:-true}"
+  compliance_reports: "${FEATURE_COMPLIANCE_REPORTS:-true}"
+
+# Default thresholds
+thresholds:
+  # Default vulnerability thresholds (null = no limit)
+  critical: 0
+  high: 5
+  medium: 20
+  low: null
+  info: null

@@ -1,0 +1,132 @@
+# Application Configuration Template
+# Copy this file to create a new application configuration
+
+application:
+  # Application name (required)
+  name: "My Application"
+
+  # Brief description
+  description: "Description of the application"
+
+  # Base URL to scan (required)
+  url: "https://app.example.com"
+
+  # Owner email (required)
+  owner: "owner@example.com"
+
+  # Team name
+  team: "Platform Engineering"
+
+  # Business criticality: critical, high, medium, low
+  criticality: medium
+
+  # Tags for organization and filtering
+  tags:
+    - production
+    - web-app
+
+  # Scan configuration
+  scan:
+    # Cron schedule (optional, format: "minute hour day month weekday")
+    # Examples:
+    #   "0 2 * * *"     - Daily at 2 AM
+    #   "0 2 * * 0"     - Weekly on Sunday at 2 AM
+    #   "0 2 1 * *"     - Monthly on 1st at 2 AM
+    #   "0 */6 * * *"   - Every 6 hours
+    schedule: "0 2 * * *"
+
+    # Scan type: full, quick, incremental
+    type: full
+
+    # Timeout in seconds (default: 7200 = 2 hours)
+    timeout: 7200
+
+    # Scan policy reference (see config/scan-policies/)
+    policy: default
+
+    # Vulnerability thresholds (fail build if exceeded)
+    thresholds:
+      critical: 0      # Fail if any critical found
+      high: 5          # Fail if more than 5 high severity
+      medium: 20       # Fail if more than 20 medium
+      low: null        # No limit on low severity
+      info: null       # No limit on informational
+
+    # Authentication configuration (optional)
+    authentication:
+      enabled: false
+      type: "form"  # form, oauth, api_key, basic, session
+
+      # Form-based authentication
+      # login_url: "https://app.example.com/login"
+      # username_field: "email"
+      # password_field: "password"
+      # credentials:
+      #   username: "${SCAN_USERNAME}"
+      #   password: "${SCAN_PASSWORD}"
+      # success_indicator: "Welcome"
+
+    # Custom HTTP headers (optional)
+    custom_headers: {}
+      # User-Agent: "AMTD Security Scanner"
+      # X-Custom-Header: "value"
+
+    # URL patterns to exclude from scanning
+    exclusions:
+      - "/logout"
+      - "/admin/.*"
+      - ".*\\.pdf$"
+      - ".*\\.(jpg|jpeg|png|gif|svg)$"
+
+    # Context-specific settings (optional)
+    context:
+      # Include only URLs matching these patterns
+      include_patterns:
+        - "https://app.example.com/.*"
+
+      # Exclude URLs matching these patterns
+      exclude_patterns:
+        - "https://app.example.com/static/.*"
+
+  # Notification configuration
+  notifications:
+    # Email notifications
+    email:
+      enabled: true
+      recipients:
+        - security-team@example.com
+        - dev-team@example.com
+
+    # Slack notifications
+    slack:
+      enabled: false
+      channel: "#security-alerts"
+      webhook_url: "${SLACK_WEBHOOK_URL}"
+      mention_on_critical: true
+
+    # GitHub integration
+    github:
+      enabled: false
+      create_issues: true
+      issue_severity: ["critical", "high"]  # Create issues for these severities
+      comment_on_pr: true
+      block_merge_on_critical: false
+
+    # Webhooks
+    webhooks:
+      enabled: false
+      urls:
+        - "https://your-webhook.example.com/endpoint"
+
+  # Metadata (optional)
+  metadata:
+    department: "Engineering"
+    cost_center: "ENG-001"
+    compliance_scope:
+      - pci-dss
+      - soc2
+    documentation_url: "https://docs.example.com/my-app"
+    repository_url: "https://github.com/org/my-app"
+    contacts:
+      technical_lead: "tech-lead@example.com"
+      security_champion: "sec-champion@example.com"

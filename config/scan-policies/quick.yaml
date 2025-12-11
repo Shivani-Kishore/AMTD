@@ -1,0 +1,48 @@
+# Quick Scan Policy
+# Fast scan with reduced depth and intensity
+
+policy:
+  name: "Quick Scan Policy"
+  description: "Fast scan for quick feedback, suitable for CI/CD pipelines"
+
+  spider:
+    enabled: true
+    max_depth: 3
+    max_children: 5
+    max_duration: 10
+    thread_count: 3
+
+  ajax_spider:
+    enabled: false  # Disable AJAX spider for speed
+
+  passive_scan:
+    enabled: true
+
+  active_scan:
+    enabled: true
+    intensity: low
+    thread_count: 3
+    delay_in_ms: 0
+    default_strength: low
+    default_threshold: medium
+
+    # Only scan for high-priority vulnerabilities
+    rules:
+      - id: 40018
+        name: "SQL Injection"
+        enabled: true
+        strength: medium
+        threshold: medium
+
+      - id: 40012
+        name: "Cross Site Scripting (Reflected)"
+        enabled: true
+        strength: medium
+        threshold: medium
+
+  scope:
+    exclude_from_context:
+      - ".*logout.*"
+      - ".*signout.*"
+      - ".*delete.*"
+      - ".*\\.(pdf|jpg|jpeg|png|gif|svg|css|js|woff|ttf)$"

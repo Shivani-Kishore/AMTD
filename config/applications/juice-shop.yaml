@@ -1,0 +1,82 @@
+# OWASP Juice Shop Application Configuration
+# This is a sample vulnerable application for testing
+
+application:
+  name: "OWASP Juice Shop"
+  description: "Intentionally insecure web application for security testing"
+  url: "http://juice-shop:3000"
+
+  # Ownership
+  owner: "security-team@example.com"
+  team: "Security Team"
+
+  # Business criticality
+  criticality: low  # Since it's a test application
+
+  # Tags for organization
+  tags:
+    - testing
+    - vulnerable-app
+    - owasp
+    - docker
+
+  # Scan configuration
+  scan:
+    # Schedule: Daily at 3 AM
+    schedule: "0 3 * * *"
+
+    # Scan type: full, quick, or incremental
+    type: full
+
+    # Timeout in seconds (1 hour)
+    timeout: 3600
+
+    # Reference to scan policy
+    policy: default
+
+    # Vulnerability thresholds (for testing, we're lenient)
+    thresholds:
+      critical: 100
+      high: 100
+      medium: 100
+      low: null
+      info: null
+
+    # No authentication required for Juice Shop
+    authentication:
+      enabled: false
+
+    # Custom headers (optional)
+    custom_headers:
+      User-Agent: "AMTD Security Scanner/1.0"
+
+    # URL patterns to exclude
+    exclusions:
+      - "/socket.io/.*"
+      - "/.*\\.js$"
+      - "/.*\\.css$"
+      - "/.*\\.jpg$"
+      - "/.*\\.png$"
+      - "/.*\\.gif$"
+
+  # Notification settings
+  notifications:
+    email:
+      enabled: true
+      recipients:
+        - security-team@example.com
+
+    slack:
+      enabled: false
+      channel: "#security-testing"
+
+    github:
+      enabled: false
+      create_issues: false
+
+  # Metadata
+  metadata:
+    department: "Security"
+    cost_center: "SEC-001"
+    compliance_scope: []
+    documentation_url: "https://github.com/juice-shop/juice-shop"

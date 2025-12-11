@@ -1,0 +1,174 @@
+# Default Scan Policy
+# Balanced scan suitable for most applications
+
+policy:
+  name: "Default Scan Policy"
+  description: "Balanced scan with active and passive scanning"
+
+  # Spider configuration (web crawler)
+  spider:
+    enabled: true
+    max_depth: 5              # Maximum crawl depth
+    max_children: 10          # Maximum child nodes per page
+    max_duration: 30          # Maximum spider duration (minutes)
+    thread_count: 5           # Number of spider threads
+    user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
+    # Spider scope
+    excluded_patterns:
+      - ".*logout.*"
+      - ".*signout.*"
+      - ".*delete.*"
+      - ".*remove.*"
+
+  # AJAX Spider (for JavaScript-heavy applications)
+  ajax_spider:
+    enabled: true
+    max_duration: 15          # Maximum AJAX spider duration (minutes)
+    max_crawl_depth: 10       # Maximum depth
+    max_crawl_states: 10      # Maximum states to crawl
+    browser: "firefox-headless"
+
+    # AJAX spider specific exclusions
+    excluded_patterns:
+      - ".*logout.*"
+      - ".*signout.*"
+
+  # Passive scanning (non-intrusive)
+  passive_scan:
+    enabled: true
+    auto_enable_new_rules: true
+
+    # Specific passive scan rules
+    rules:
+      # All rules enabled by default
+      # Uncomment to customize
+      # - id: 10010
+      #   name: "Cookie No HttpOnly Flag"
+      #   enabled: true
+      #   threshold: medium
+
+  # Active scanning (sends attack payloads)
+  active_scan:
+    enabled: true
+
+    # Scan intensity: low, medium, high
+    intensity: medium
+
+    # Thread count for parallel scanning
+    thread_count: 5
+
+    # Delay between requests (milliseconds)
+    delay_in_ms: 0
+
+    # Attack strength for each rule
+    # Options: low, medium, high, insane
+    default_strength: medium
+
+    # Alert threshold
+    # Options: off, low, medium, high
+    default_threshold: medium
+
+    # Specific active scan rules
+    rules:
+      # SQL Injection
+      - id: 40018
+        name: "SQL Injection"
+        enabled: true
+        strength: high
+        threshold: medium
+
+      # Cross Site Scripting (Reflected)
+      - id: 40012
+        name: "Cross Site Scripting (Reflected)"
+        enabled: true
+        strength: high
+        threshold: medium
+
+      # Cross Site Scripting (Persistent)
+      - id: 40014
+        name: "Cross Site Scripting (Persistent)"
+        enabled: true
+        strength: high
+        threshold: medium
+
+      # Path Traversal
+      - id: 6
+        name: "Path Traversal"
+        enabled: true
+        strength: medium
+        threshold: medium
+
+      # Remote File Inclusion
+      - id: 7
+        name: "Remote File Inclusion"
+        enabled: true
+        strength: medium
+        threshold: medium
+
+      # Server Side Include
+      - id: 40009
+        name: "Server Side Include"
+        enabled: true
+        strength: medium
+        threshold: medium
+
+      # Command Injection
+      - id: 90020
+        name: "Remote OS Command Injection"
+        enabled: true
+        strength: high
+        threshold: medium
+
+      # CRLF Injection
+      - id: 40003
+        name: "CRLF Injection"
+        enabled: true
+        strength: medium
+        threshold: medium
+
+      # XML External Entity
+      - id: 90023
+        name: "XML External Entity Attack"
+        enabled: true
+        strength: medium
+        threshold: medium
+
+  # Authentication (if required)
+  authentication:
+    enabled: false
+    # Authentication configuration comes from application config
+
+  # Session management
+  session:
+    management_enabled: false
+
+  # Technology detection
+  technology_detection:
+    enabled: true
+
+  # Anti-CSRF token detection
+  anti_csrf:
+    enabled: true
+
+  # Scope configuration
+  scope:
+    # Include in context (from application config)
+    include_in_context: []
+
+    # Exclude from context
+    exclude_from_context:
+      - ".*logout.*"
+      - ".*signout.*"
+      - ".*delete.*"
+      - ".*remove.*"
+      - ".*\\.pdf$"
+      - ".*\\.jpg$"
+      - ".*\\.jpeg$"
+      - ".*\\.png$"
+      - ".*\\.gif$"
+      - ".*\\.svg$"
+      - ".*\\.css$"
+      - ".*\\.js$"
+      - ".*\\.woff.*"
+      - ".*\\.ttf$"

@@ -1,0 +1,33 @@
+# Passive Only Scan Policy
+# Non-intrusive scanning only (safe for production)
+
+policy:
+  name: "Passive Only Scan Policy"
+  description: "Safe passive scanning without active attack payloads"
+
+  spider:
+    enabled: true
+    max_depth: 5
+    max_children: 10
+    max_duration: 20
+    thread_count: 5
+
+  ajax_spider:
+    enabled: true
+    max_duration: 10
+    max_crawl_depth: 5
+    max_crawl_states: 10
+
+  passive_scan:
+    enabled: true
+    auto_enable_new_rules: true
+
+  active_scan:
+    enabled: false  # No active scanning
+
+  scope:
+    exclude_from_context:
+      - ".*logout.*"
+      - ".*signout.*"
+      - ".*delete.*"
+      - ".*\\.(pdf|jpg|jpeg|png|gif|svg|css|js|woff|ttf)$"

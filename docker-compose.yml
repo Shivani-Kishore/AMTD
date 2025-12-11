@@ -1,0 +1,222 @@
+version: '3.8'
+
+services:
+  # Jenkins CI/CD Server
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: amtd-jenkins
+    privileged: true
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config:/var/jenkins_home/amtd-config:ro
+      - ./scripts:/var/jenkins_home/amtd-scripts:ro
+      - ./vars:/var/jenkins_home/amtd-vars:ro
+      - ./reports:/var/jenkins_home/reports:rw
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Djenkins.security.ApiTokenProperty.adminCanGenerateNewTokens=true
+      - JENKINS_ADMIN_ID=${JENKINS_ADMIN_USER:-admin}
+      - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD:-admin123}
+    networks:
+      - amtd-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: amtd-postgres
+    environment:
+      - POSTGRES_USER=${DB_USER:-amtd}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-amtd_secure_password}
+      - POSTGRES_DB=${DB_NAME:-amtd}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./src/db/schema.sql:/docker-entrypoint-initdb.d/02-schema.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - amtd-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-amtd}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO Object Storage
+  minio:
+    image: minio/minio:latest
+    container_name: amtd-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-admin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minio_secure_password}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - amtd-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MinIO Client (for bucket initialization)
+  minio-init:
+    image: minio/mc:latest
+    container_name: amtd-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 10;
+      /usr/bin/mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER:-admin} ${MINIO_ROOT_PASSWORD:-minio_secure_password};
+      /usr/bin/mc mb myminio/amtd-reports --ignore-existing;
+      /usr/bin/mc mb myminio/amtd-scans --ignore-existing;
+      /usr/bin/mc mb myminio/amtd-backups --ignore-existing;
+      /usr/bin/mc anonymous set download myminio/amtd-reports;
+      echo 'MinIO buckets initialized successfully';
+      exit 0;
+      "
+    networks:
+      - amtd-network
+
+  # OWASP Juice Shop (Test Target)
+  juice-shop:
+    image: bkimminich/juice-shop:latest
+    container_name: amtd-juice-shop
+    ports:
+      - "3000:3000"
+    networks:
+      - amtd-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis (for Celery task queue)
+  redis:
+    image: redis:7-alpine
+    container_name: amtd-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - amtd-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # AMTD API Server
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: amtd-api
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    environment:
+      - FLASK_APP=src/api/app.py
+      - FLASK_ENV=${ENVIRONMENT:-development}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-amtd}
+      - DB_USER=${DB_USER:-amtd}
+      - DB_PASSWORD=${DB_PASSWORD:-amtd_secure_password}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-admin}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:-minio_secure_password}
+      - JENKINS_URL=http://jenkins:8080
+    volumes:
+      - ./config:/app/config:ro
+      - ./reports:/app/reports:rw
+      - ./logs:/app/logs:rw
+    ports:
+      - "5000:5000"
+    networks:
+      - amtd-network
+    restart: unless-stopped
+    command: python -m flask run --host=0.0.0.0 --port=5000
+
+  # Prometheus (Monitoring)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: amtd-prometheus
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - amtd-network
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  # Grafana (Visualization)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: amtd-grafana
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin123}
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./config/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    ports:
+      - "3001:3000"
+    networks:
+      - amtd-network
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:
+    driver: local
+  postgres_data:
+    driver: local
+  minio_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  amtd-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

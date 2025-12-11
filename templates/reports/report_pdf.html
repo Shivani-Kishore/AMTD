@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AMTD Security Scan Report - {{ report.scan_info.application }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+            @top-center {
+                content: "AMTD Security Scan Report";
+                font-size: 10pt;
+                color: #666;
+            }
+            @bottom-center {
+                content: "Page " counter(page) " of " counter(pages);
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 10pt;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        h1 { font-size: 24pt; color: #667eea; page-break-after: avoid; }
+        h2 { font-size: 18pt; color: #667eea; margin-top: 1.5em; page-break-after: avoid; }
+        h3 { font-size: 14pt; color: #764ba2; page-break-after: avoid; }
+        h4 { font-size: 12pt; color: #764ba2; page-break-after: avoid; }
+
+        .cover-page {
+            text-align: center;
+            padding-top: 5cm;
+            page-break-after: always;
+        }
+
+        .cover-page h1 { font-size: 36pt; margin-bottom: 1em; }
+        .cover-page h2 { font-size: 24pt; color: #666; margin-bottom: 2em; }
+        .cover-page .metadata { font-size: 12pt; color: #666; }
+
+        .executive-summary {
+            background-color: #f8f9fa;
+            padding: 1em;
+            border-left: 4px solid #667eea;
+            margin: 1em 0;
+            page-break-inside: avoid;
+        }
+
+        .risk-score-box {
+            background-color: #fff;
+            border: 2px solid {{ report.risk_assessment.color }};
+            padding: 1.5em;
+            text-align: center;
+            margin: 1em 0;
+            page-break-inside: avoid;
+        }
+
+        .risk-score {
+            font-size: 48pt;
+            font-weight: bold;
+            color: {{ report.risk_assessment.color }};
+        }
+
+        .statistics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            page-break-inside: avoid;
+        }
+
+        .statistics-table th,
+        .statistics-table td {
+            padding: 0.8em;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .statistics-table th { background-color: #f8f9fa; font-weight: bold; }
+
+        .severity-critical { color: #dc3545; font-weight: bold; }
+        .severity-high { color: #fd7e14; font-weight: bold; }
+        .severity-medium { color: #ffc107; font-weight: bold; }
+        .severity-low { color: #17a2b8; }
+        .severity-info { color: #6c757d; }
+
+        .vulnerability-box {
+            border-left: 4px solid;
+            padding: 1em;
+            margin: 1em 0;
+            background-color: #f8f9fa;
+            page-break-inside: avoid;
+        }
+
+        .vulnerability-box.critical { border-left-color: #dc3545; }
+        .vulnerability-box.high { border-left-color: #fd7e14; }
+        .vulnerability-box.medium { border-left-color: #ffc107; }
+        .vulnerability-box.low { border-left-color: #17a2b8; }
+        .vulnerability-box.info { border-left-color: #6c757d; }
+
+        .vulnerability-box h4 { margin-top: 0; }
+        .vulnerability-box .url { font-family: 'Courier New', monospace; font-size: 9pt; color: #666; }
+
+        .solution-box {
+            background-color: #e7f3ff;
+            border-left: 3px solid #0066cc;
+            padding: 0.8em;
+            margin-top: 0.5em;
+        }
+
+        .recommendation {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 1em;
+            margin: 0.5em 0;
+            page-break-inside: avoid;
+        }
+
+        .recommendation .priority {
+            display: inline-block;
+            padding: 0.3em 0.8em;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            font-size: 9pt;
+        }
+
+        .priority-immediate { background-color: #dc3545; }
+        .priority-high { background-color: #fd7e14; }
+        .priority-medium { background-color: #ffc107; color: #333; }
+        .priority-ongoing { background-color: #17a2b8; }
+
+        .page-break { page-break-before: always; }
+
+        table.info-table {
+            width: 100%;
+            margin: 1em 0;
+        }
+
+        table.info-table td {
+            padding: 0.5em;
+        }
+
+        table.info-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cover Page -->
+    <div class="cover-page">
+        <h1>Security Scan Report</h1>
+        <h2>{{ report.scan_info.application }}</h2>
+        <div class="metadata">
+            <p><strong>Scan Type:</strong> {{ report.scan_info.scan_type|upper }}</p>
+            <p><strong>Target:</strong> {{ report.scan_info.target_url }}</p>
+            <p><strong>Completed:</strong> {{ report.scan_info.completed_at|format_timestamp }}</p>
+            <p><strong>Duration:</strong> {{ report.scan_info.duration|format_duration }}</p>
+            <p style="margin-top: 3em;"><strong>Report Generated:</strong> {{ generated_at|format_timestamp }}</p>
+        </div>
+    </div>
+
+    <!-- Executive Summary -->
+    {% if report.include_executive_summary %}
+    <h1>Executive Summary</h1>
+
+    <div class="executive-summary">
+        <p><strong>{{ report.executive_summary.summary_text }}</strong></p>
+    </div>
+
+    <div class="risk-score-box">
+        <div>Overall Risk Assessment</div>
+        <div class="risk-score">{{ report.risk_assessment.score }}</div>
+        <div style="font-size: 18pt; font-weight: bold; color: {{ report.risk_assessment.color }};">
+            {{ report.risk_assessment.rating }}
+        </div>
+        <p style="margin-top: 1em;">{{ report.risk_assessment.description }}</p>
+    </div>
+
+    <h2>Key Findings</h2>
+    <ul>
+    {% for finding in report.executive_summary.key_findings %}
+        <li>{{ finding }}</li>
+    {% endfor %}
+    </ul>
+
+    <h2>Vulnerability Summary</h2>
+    <table class="statistics-table">
+        <tr>
+            <th>Severity</th>
+            <th>Count</th>
+            <th>Percentage</th>
+        </tr>
+        <tr>
+            <td class="severity-critical">Critical</td>
+            <td>{{ report.statistics.critical }}</td>
+            <td>{{ ((report.statistics.critical / report.statistics.total) * 100)|round(1) if report.statistics.total > 0 else 0 }}%</td>
+        </tr>
+        <tr>
+            <td class="severity-high">High</td>
+            <td>{{ report.statistics.high }}</td>
+            <td>{{ ((report.statistics.high / report.statistics.total) * 100)|round(1) if report.statistics.total > 0 else 0 }}%</td>
+        </tr>
+        <tr>
+            <td class="severity-medium">Medium</td>
+            <td>{{ report.statistics.medium }}</td>
+            <td>{{ ((report.statistics.medium / report.statistics.total) * 100)|round(1) if report.statistics.total > 0 else 0 }}%</td>
+        </tr>
+        <tr>
+            <td class="severity-low">Low</td>
+            <td>{{ report.statistics.low }}</td>
+            <td>{{ ((report.statistics.low / report.statistics.total) * 100)|round(1) if report.statistics.total > 0 else 0 }}%</td>
+        </tr>
+        <tr>
+            <td class="severity-info">Informational</td>
+            <td>{{ report.statistics.info }}</td>
+            <td>{{ ((report.statistics.info / report.statistics.total) * 100)|round(1) if report.statistics.total > 0 else 0 }}%</td>
+        </tr>
+        <tr style="border-top: 2px solid #333;">
+            <td><strong>Total</strong></td>
+            <td><strong>{{ report.statistics.total }}</strong></td>
+            <td><strong>100%</strong></td>
+        </tr>
+    </table>
+    {% endif %}
+
+    <!-- Recommendations -->
+    <div class="page-break"></div>
+    <h1>Recommendations</h1>
+    {% for rec in report.recommendations %}
+    <div class="recommendation">
+        <span class="priority priority-{{ rec.priority|lower|replace(' ', '-') }}">{{ rec.priority|upper }}</span>
+        <h4>{{ rec.title }}</h4>
+        <p>{{ rec.description }}</p>
+        <p><strong>Timeline:</strong> {{ rec.timeline }}</p>
+    </div>
+    {% endfor %}
+
+    <!-- Detailed Findings -->
+    {% if report.include_detailed_findings %}
+    <div class="page-break"></div>
+    <h1>Detailed Findings</h1>
+
+    {% for severity in ['critical', 'high', 'medium', 'low', 'info'] %}
+        {% if report.vulnerabilities[severity] %}
+        <h2>{{ severity|capitalize }} Severity Vulnerabilities ({{ report.vulnerabilities[severity]|length }})</h2>
+
+        {% for vuln in report.vulnerabilities[severity] %}
+        <div class="vulnerability-box {{ severity }}">
+            <h4>{{ loop.index }}. {{ vuln.name }}</h4>
+
+            <table class="info-table">
+                <tr>
+                    <td>Severity:</td>
+                    <td><span class="severity-{{ severity }}">{{ severity|upper }}</span></td>
+                </tr>
+                <tr>
+                    <td>Confidence:</td>
+                    <td>{{ vuln.confidence|upper }}</td>
+                </tr>
+                {% if vuln.cwe_id %}
+                <tr>
+                    <td>CWE ID:</td>
+                    <td>{{ vuln.cwe_id }}</td>
+                </tr>
+                {% endif %}
+                {% if vuln.category %}
+                <tr>
+                    <td>Category:</td>
+                    <td>{{ vuln.category }}</td>
+                </tr>
+                {% endif %}
+            </table>
+
+            <p><strong>Description:</strong></p>
+            <p>{{ vuln.description }}</p>
+
+            <p><strong>Affected URL:</strong></p>
+            <p class="url">{{ vuln.url }}</p>
+
+            {% if vuln.method %}
+            <p><strong>HTTP Method:</strong> {{ vuln.method }}</p>
+            {% endif %}
+
+            {% if vuln.parameter %}
+            <p><strong>Parameter:</strong> {{ vuln.parameter }}</p>
+            {% endif %}
+
+            {% if vuln.solution %}
+            <div class="solution-box">
+                <p><strong>Recommended Solution:</strong></p>
+                <p>{{ vuln.solution }}</p>
+            </div>
+            {% endif %}
+
+            {% if vuln.reference %}
+            <p><strong>References:</strong> {{ vuln.reference }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    <!-- Scan Information -->
+    <div class="page-break"></div>
+    <h1>Scan Information</h1>
+
+    <table class="info-table">
+        <tr>
+            <td>Application:</td>
+            <td>{{ report.scan_info.application }}</td>
+        </tr>
+        <tr>
+            <td>Scan ID:</td>
+            <td>{{ report.scan_info.scan_id }}</td>
+        </tr>
+        <tr>
+            <td>Scan Type:</td>
+            <td>{{ report.scan_info.scan_type|upper }}</td>
+        </tr>
+        <tr>
+            <td>Target URL:</td>
+            <td>{{ report.scan_info.target_url }}</td>
+        </tr>
+        <tr>
+            <td>Started At:</td>
+            <td>{{ report.scan_info.started_at|format_timestamp }}</td>
+        </tr>
+        <tr>
+            <td>Completed At:</td>
+            <td>{{ report.scan_info.completed_at|format_timestamp }}</td>
+        </tr>
+        <tr>
+            <td>Duration:</td>
+            <td>{{ report.scan_info.duration|format_duration }}</td>
+        </tr>
+        <tr>
+            <td>Status:</td>
+            <td>{{ report.scan_info.status|upper }}</td>
+        </tr>
+    </table>
+
+    <p style="text-align: center; margin-top: 3em; color: #666; font-size: 9pt;">
+        Generated by AMTD Report Generator v1.0.0<br>
+        {{ generated_at|format_timestamp }}
+    </p>
+</body>
+</html>

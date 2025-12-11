@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMTD Security Scan Report - {{ report.scan_info.application }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/report.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; }
+        .report-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; margin-bottom: 2rem; }
+        .risk-score { font-size: 4rem; font-weight: bold; }
+        .stat-card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .severity-critical { color: #dc3545; }
+        .severity-high { color: #fd7e14; }
+        .severity-medium { color: #ffc107; }
+        .severity-low { color: #17a2b8; }
+        .severity-info { color: #6c757d; }
+        .vuln-card { background: white; border-left: 4px solid; padding: 1rem; margin-bottom: 1rem; border-radius: 4px; }
+        .vuln-card.critical { border-left-color: #dc3545; }
+        .vuln-card.high { border-left-color: #fd7e14; }
+        .vuln-card.medium { border-left-color: #ffc107; }
+        .vuln-card.low { border-left-color: #17a2b8; }
+        .vuln-card.info { border-left-color: #6c757d; }
+        .chart-container { background: white; padding: 2rem; border-radius: 8px; margin-bottom: 2rem; }
+        .top-vuln { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="report-header">
+        <div class="container">
+            <h1>Security Scan Report</h1>
+            <h3>{{ report.scan_info.application }}</h3>
+            <p class="mb-0">Scan Type: {{ report.scan_info.scan_type|upper }} | Target: {{ report.scan_info.target_url }}</p>
+            <p class="mb-0">Completed: {{ report.scan_info.completed_at|format_timestamp }}</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Risk Score Section -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stat-card text-center">
+                    <h5>Overall Risk Score</h5>
+                    <div class="risk-score" style="color: {{ report.risk_score.color }}">
+                        {{ report.risk_score.score }}
+                    </div>
+                    <h4>{{ report.risk_score.rating }}</h4>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="stat-card">
+                    <h5>Vulnerability Statistics</h5>
+                    <div class="row text-center">
+                        <div class="col">
+                            <h2 class="severity-critical">{{ report.statistics.critical }}</h2>
+                            <p>Critical</p>
+                        </div>
+                        <div class="col">
+                            <h2 class="severity-high">{{ report.statistics.high }}</h2>
+                            <p>High</p>
+                        </div>
+                        <div class="col">
+                            <h2 class="severity-medium">{{ report.statistics.medium }}</h2>
+                            <p>Medium</p>
+                        </div>
+                        <div class="col">
+                            <h2 class="severity-low">{{ report.statistics.low }}</h2>
+                            <p>Low</p>
+                        </div>
+                        <div class="col">
+                            <h2 class="severity-info">{{ report.statistics.info }}</h2>
+                            <p>Info</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if include_charts %}
+        <!-- Charts Section -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h5>Vulnerabilities by Severity</h5>
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h5>Vulnerabilities by Category</h5>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Top Vulnerabilities -->
+        {% if report.top_vulnerabilities %}
+        <div class="stat-card">
+            <h4>Top {{ report.top_vulnerabilities|length }} Critical Findings</h4>
+            {% for vuln in report.top_vulnerabilities %}
+            <div class="top-vuln">
+                <h6>
+                    <span class="badge badge-{{ vuln.severity|severity_color }}">{{ vuln.severity|upper }}</span>
+                    {{ vuln.name }}
+                </h6>
+                <p class="mb-1">{{ vuln.description[:200] }}...</p>
+                <small><strong>URL:</strong> {{ vuln.url }}</small>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Vulnerabilities by Severity -->
+        {% for severity in ['critical', 'high', 'medium', 'low', 'info'] %}
+        {% if report.vuln_by_severity[severity] %}
+        <div class="stat-card">
+            <h4>{{ severity|capitalize }} Severity Vulnerabilities ({{ report.vuln_by_severity[severity]|length }})</h4>
+            {% for vuln in report.vuln_by_severity[severity] %}
+            <div class="vuln-card {{ severity }}">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>{{ vuln.name }}</h5>
+                        <p>{{ vuln.description }}</p>
+                        <p><strong>URL:</strong> <code>{{ vuln.url }}</code></p>
+                        {% if vuln.method %}
+                        <p><strong>Method:</strong> {{ vuln.method }}</p>
+                        {% endif %}
+                        {% if vuln.parameter %}
+                        <p><strong>Parameter:</strong> {{ vuln.parameter }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Confidence:</strong> <span class="badge badge-secondary">{{ vuln.confidence|upper }}</span></p>
+                        {% if vuln.cwe_id %}
+                        <p><strong>CWE:</strong> {{ vuln.cwe_id }}</p>
+                        {% endif %}
+                        {% if vuln.category %}
+                        <p><strong>Category:</strong> {{ vuln.category }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if vuln.solution %}
+                <div class="alert alert-info mt-2">
+                    <strong>Recommended Solution:</strong> {{ vuln.solution }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Footer -->
+        <div class="stat-card text-center">
+            <p class="mb-0">Report generated by AMTD at {{ generated_at|format_timestamp }}</p>
+            <p class="mb-0">Duration: {{ report.scan_info.duration|format_duration }}</p>
+        </div>
+    </div>
+
+    {% if include_charts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script>
+        // Severity Chart
+        const severityCtx = document.getElementById('severityChart').getContext('2d');
+        new Chart(severityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ report.chart_data.severity.labels|tojson }},
+                datasets: [{
+                    data: {{ report.chart_data.severity.values|tojson }},
+                    backgroundColor: {{ report.chart_data.severity.colors|tojson }}
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ report.chart_data.category.labels|tojson }},
+                datasets: [{
+                    label: 'Vulnerabilities',
+                    data: {{ report.chart_data.category.values|tojson }},
+                    backgroundColor: 'rgba(102, 126, 234, 0.8)'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,131 @@
+/* PDF-specific styles for WeasyPrint */
+
+@page {
+    size: A4;
+    margin: 2cm;
+}
+
+@page :first {
+    margin-top: 0;
+}
+
+/* Typography */
+body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 10pt;
+    line-height: 1.6;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+h1 { font-size: 24pt; color: #667eea; }
+h2 { font-size: 18pt; color: #667eea; }
+h3 { font-size: 14pt; color: #764ba2; }
+h4 { font-size: 12pt; color: #764ba2; }
+
+/* Page breaks */
+.page-break {
+    page-break-before: always;
+}
+
+.avoid-break {
+    page-break-inside: avoid;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+    page-break-inside: avoid;
+}
+
+th, td {
+    padding: 0.8em;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+/* Boxes and containers */
+.box {
+    border: 1px solid #ddd;
+    padding: 1em;
+    margin: 1em 0;
+    page-break-inside: avoid;
+}
+
+.alert {
+    padding: 1em;
+    margin: 1em 0;
+    border-left: 4px solid;
+    page-break-inside: avoid;
+}
+
+.alert-info { border-left-color: #0066cc; background-color: #e7f3ff; }
+.alert-warning { border-left-color: #ffc107; background-color: #fff3cd; }
+.alert-danger { border-left-color: #dc3545; background-color: #f8d7da; }
+.alert-success { border-left-color: #28a745; background-color: #d4edda; }
+
+/* Code and preformatted text */
+code, pre {
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 9pt;
+    background-color: #f4f4f4;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+pre {
+    padding: 1em;
+    overflow-x: auto;
+    white-space: pre-wrap;
+}
+
+/* Links */
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Lists */
+ul, ol {
+    margin: 0.5em 0;
+    padding-left: 2em;
+}
+
+li {
+    margin: 0.3em 0;
+}
+
+/* Severity colors */
+.severity-critical { color: #dc3545; font-weight: bold; }
+.severity-high { color: #fd7e14; font-weight: bold; }
+.severity-medium { color: #ffc107; font-weight: bold; }
+.severity-low { color: #17a2b8; }
+.severity-info { color: #6c757d; }
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 2em;
+    padding-top: 1em;
+    border-top: 1px solid #ddd;
+    color: #666;
+    font-size: 9pt;
+}

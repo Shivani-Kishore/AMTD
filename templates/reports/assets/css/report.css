@@ -1,0 +1,257 @@
+/* Custom CSS for HTML reports */
+
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --critical-color: #dc3545;
+    --high-color: #fd7e14;
+    --medium-color: #ffc107;
+    --low-color: #17a2b8;
+    --info-color: #6c757d;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.report-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.report-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.report-header h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.8rem;
+    opacity: 0.9;
+}
+
+.report-header p {
+    margin: 0.3rem 0;
+    opacity: 0.8;
+}
+
+/* Cards */
+.stat-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.stat-card h5 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+/* Risk Score */
+.risk-score {
+    font-size: 4rem;
+    font-weight: bold;
+    line-height: 1;
+    margin: 1rem 0;
+}
+
+/* Severity Colors */
+.severity-critical { color: var(--critical-color); }
+.severity-high { color: var(--high-color); }
+.severity-medium { color: var(--medium-color); }
+.severity-low { color: var(--low-color); }
+.severity-info { color: var(--info-color); }
+
+/* Vulnerability Cards */
+.vuln-card {
+    background: white;
+    border-left: 4px solid;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vuln-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.vuln-card.critical { border-left-color: var(--critical-color); }
+.vuln-card.high { border-left-color: var(--high-color); }
+.vuln-card.medium { border-left-color: var(--medium-color); }
+.vuln-card.low { border-left-color: var(--low-color); }
+.vuln-card.info { border-left-color: var(--info-color); }
+
+.vuln-card h5 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.vuln-card code {
+    background-color: #f4f4f4;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+    word-break: break-all;
+}
+
+/* Charts */
+.chart-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chart-container h5 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+/* Top Vulnerabilities */
+.top-vuln {
+    background: #fff3cd;
+    border-left: 4px solid var(--medium-color);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
+
+.top-vuln h6 {
+    margin: 0 0 0.5rem 0;
+    color: #856404;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.85rem;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.badge-danger { background-color: var(--critical-color); }
+.badge-warning { background-color: var(--high-color); }
+.badge-info { background-color: var(--low-color); }
+.badge-secondary { background-color: var(--info-color); }
+.badge-light { background-color: #f8f9fa; color: #333; }
+
+/* Alerts */
+.alert {
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.alert-info {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .report-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .report-header h3 {
+        font-size: 1.3rem;
+    }
+
+    .risk-score {
+        font-size: 3rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background-color: white;
+    }
+
+    .report-header {
+        background: var(--primary-color) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .stat-card,
+    .vuln-card,
+    .chart-container {
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .vuln-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}

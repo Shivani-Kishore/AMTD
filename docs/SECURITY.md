@@ -26,7 +26,7 @@
 
 | Version | Supported | Security Updates |
 |---------|-----------|------------------|
-| 1.x.x   | ✅ Yes    | Active          |
+| 1.x.x   | Yes    | Active          |
 | 0.x.x   | ❌ No     | End of Life     |
 
 ### Security Update Schedule
@@ -232,13 +232,13 @@ auth:
 
 | Action | Admin | Security Engineer | Developer | Viewer |
 |--------|-------|-------------------|-----------|--------|
-| Create/Edit Apps | ✅ | ✅ | ❌ | ❌ |
-| Trigger Scans | ✅ | ✅ | ✅* | ❌ |
-| View Scans | ✅ | ✅ | ✅* | ✅* |
-| Triage Vulns | ✅ | ✅ | ❌ | ❌ |
-| View Reports | ✅ | ✅ | ✅* | ✅* |
-| Manage Users | ✅ | ❌ | ❌ | ❌ |
-| System Config | ✅ | ❌ | ❌ | ❌ |
+| Create/Edit Apps | | | ❌ | ❌ |
+| Trigger Scans | | | * | ❌ |
+| View Scans | | | * | * |
+| Triage Vulns | | | ❌ | ❌ |
+| View Reports | | | * | * |
+| Manage Users | | ❌ | ❌ | ❌ |
+| System Config | | ❌ | ❌ | ❌ |
 
 *Only for assigned applications
 
@@ -643,35 +643,35 @@ log_security_event('authentication_failed', username, {
 
 ### SOC 2
 
-- ✅ Access controls (RBAC)
-- ✅ Encryption at rest and in transit
-- ✅ Audit logging
-- ✅ Incident response plan
-- ✅ Regular security assessments
+- Access controls (RBAC)
+- Encryption at rest and in transit
+- Audit logging
+- Incident response plan
+- Regular security assessments
 
 ### PCI-DSS
 
-- ✅ Network segmentation
-- ✅ Strong authentication
-- ✅ Encrypted communications
-- ✅ Regular vulnerability scanning
-- ✅ Access logging and monitoring
+- Network segmentation
+- Strong authentication
+- Encrypted communications
+- Regular vulnerability scanning
+- Access logging and monitoring
 
 ### GDPR
 
-- ✅ Data minimization
-- ✅ Encryption of personal data
-- ✅ Access controls
-- ✅ Data retention policies
-- ✅ Right to deletion
+- Data minimization
+- Encryption of personal data
+- Access controls
+- Data retention policies
+- Right to deletion
 
 ### HIPAA
 
-- ✅ Access controls
-- ✅ Audit trails
-- ✅ Encryption
-- ✅ Data backup and recovery
-- ✅ Breach notification procedures
+- Access controls
+- Audit trails
+- Encryption
+- Data backup and recovery
+- Breach notification procedures
 
 ---
 

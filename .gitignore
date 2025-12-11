@@ -122,3 +122,6 @@ package-lock.json
 # IDE specific
 .vscode/settings.json
 .idea/workspace.xml
+
+# Project status and development tracking
+PROJECT_STATUS.md

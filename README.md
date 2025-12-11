@@ -5,30 +5,7 @@
 
 > Enterprise-grade security automation platform for continuous vulnerability detection in web applications
 
----
-
-## 🚀 Quick Start
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/your-org/amtd.git
-cd amtd
-
-# 2. Quick start (sets up and starts all services)
-make quick-start
-
-# 3. Run your first scan
-make scan-juice-shop
-
-# 4. View results
-make reports
-```
-
-**That's it!** AMTD is now running with Jenkins, PostgreSQL, MinIO, and a test application.
-
----
-
-## 📋 Table of Contents
+##  Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
@@ -39,27 +16,26 @@ make reports
 - [Configuration](#configuration)
 - [Documentation](#documentation)
 - [Development](#development)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
 
-## 🌟 Overview
+##  Overview
 
 AMTD is a comprehensive security automation pipeline that integrates OWASP ZAP with Jenkins CI/CD for continuous vulnerability scanning of web applications. Built for DevSecOps teams, it shifts security left in the development lifecycle.
 
 ### Why AMTD?
 
-✅ **Automated Security** - Schedule scans or trigger on every commit
-✅ **CI/CD Native** - Seamless Jenkins integration
-✅ **Comprehensive** - Powered by OWASP ZAP
-✅ **Rich Reporting** - HTML, JSON, PDF reports
-✅ **Scalable** - Docker-based, concurrent scans
-✅ **Enterprise Ready** - RBAC, SSO, compliance reporting
+- **Automated Security** - Schedule scans or trigger on every commit
+- **CI/CD Native** - Seamless Jenkins integration
+- **Comprehensive** - Powered by OWASP ZAP
+- **Rich Reporting** - HTML, JSON, PDF reports
+- **Scalable** - Docker-based, concurrent scans
+- **Enterprise Ready** - RBAC, SSO, compliance reporting
 
 ---
 
-## ✨ Features
+##  Features
 
 ### Core Capabilities
 
@@ -91,7 +67,7 @@ AMTD is a comprehensive security automation pipeline that integrates OWASP ZAP w
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -121,7 +97,7 @@ For detailed architecture documentation, see [docs/ARCHITECTURE.md](docs/ARCHITE
 
 ---
 
-## 📦 Prerequisites
+##  Prerequisites
 
 ### System Requirements
 
@@ -141,7 +117,7 @@ For detailed architecture documentation, see [docs/ARCHITECTURE.md](docs/ARCHITE
 
 ---
 
-## 💾 Installation
+##  Installation
 
 ### Option 1: Quick Start (Recommended)
 
@@ -188,7 +164,7 @@ make health
 
 ---
 
-## 🎯 Usage
+##  Usage
 
 ### Running Scans
 
@@ -268,7 +244,7 @@ make help            # Show all available commands
 
 ---
 
-## ⚙️ Configuration
+##  Configuration
 
 ### Application Configuration
 
@@ -329,7 +305,7 @@ For complete configuration reference, see [docs/CONFIGURATION_GUIDE.md](docs/CON
 
 ---
 
-## 📚 Documentation
+##  Documentation
 
 ### Core Documentation
 
@@ -349,7 +325,7 @@ For complete configuration reference, see [docs/CONFIGURATION_GUIDE.md](docs/CON
 
 ---
 
-## 🛠️ Development
+##  Development
 
 ### Setup Development Environment
 
@@ -422,10 +398,6 @@ make type-check
 
 ---
 
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
 ### Quick Contribution Guide
 
 1. Fork the repository
@@ -436,26 +408,8 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 6. Push: `git push origin feature/amazing-feature`
 7. Open a Pull Request
 
----
 
-## 📊 Project Status
-
-**Version:** 1.0.0
-**Status:** Production Ready ✅
-
-### Recent Updates
-
-✅ Core scanning engine
-✅ Jenkins pipeline integration
-✅ HTML/JSON/PDF reporting
-✅ Email notifications
-✅ GitHub integration
-🚧 Dashboard UI (in progress)
-🚧 Slack integration (in progress)
-
----
-
-## 🔒 Security
+##  Security
 
 ### Reporting Vulnerabilities
 
@@ -473,28 +427,13 @@ If you discover a security vulnerability, please email: security@example.com
 
 ---
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 💬 Support
-
-### Getting Help
-
-- **Documentation**: Start with [docs/](docs/)
-- **Issues**: [GitHub Issues](https://github.com/your-org/amtd/issues)
-- **Email**: support@example.com
-
-### Community
-
-- **Slack**: [Join our Slack](https://slack.amtd.example.com)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/amtd/discussions)
-
----
-
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - **OWASP ZAP** - For the security scanning engine
 - **Jenkins** - For the CI/CD platform
@@ -502,6 +441,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Made with ❤️ by the AMTD Team**
 
 [⬆ Back to Top](#amtd---automated-malware-target-detection)

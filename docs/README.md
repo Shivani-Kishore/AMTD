@@ -48,35 +48,35 @@ AMTD (Automated Malware Target Detection) is a comprehensive security automation
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core Capabilities
 
-- ✅ **Automated Vulnerability Scanning**
+- **Automated Vulnerability Scanning**
   - OWASP Top 10 detection
   - SQL Injection, XSS, CSRF detection
   - Authentication/Authorization testing
   - Security misconfiguration detection
 
-- ✅ **CI/CD Integration**
+- **CI/CD Integration**
   - Jenkins declarative pipeline support
   - Git webhook triggers
   - Build pass/fail based on thresholds
   - Scheduled scans with cron syntax
 
-- ✅ **Advanced Reporting**
+- **Advanced Reporting**
   - HTML reports with visual charts
   - JSON output for automation
   - PDF reports for executives
   - Trend analysis and metrics
 
-- ✅ **Notification System**
+- **Notification System**
   - Email alerts on scan completion
   - Slack/Teams integration
   - GitHub Issue creation
   - Pull Request comments
 
-- ✅ **Enterprise Features**
+- **Enterprise Features**
   - Role-based access control (RBAC)
   - SSO integration (LDAP/SAML)
   - Compliance reporting
@@ -443,7 +443,7 @@ open compliance-report-nov-2025.pdf
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 ### Application Configuration
 
@@ -584,15 +584,15 @@ pylint src/
 
 ### Current Version: 1.0.0
 
-**Status:** Production Ready ✅
+**Status:** Production Ready 
 
 ### Recent Updates
 
-- ✅ Core scanning engine implemented
-- ✅ Jenkins pipeline integration complete
-- ✅ HTML/JSON/PDF reporting
-- ✅ Email notifications
-- ✅ GitHub integration
+- Core scanning engine implemented
+- Jenkins pipeline integration complete
+- HTML/JSON/PDF reporting
+- Email notifications
+- GitHub integration
 - 🚧 Dashboard UI (in progress)
 - 🚧 Slack/Teams integration (in progress)
 - 📋 ML-based false positive reduction (planned)
@@ -704,7 +704,7 @@ For enterprise support, SLA, and custom features:
 
 ---
 
-## ⭐ Star History
+## Star History
 
 If you find AMTD useful, please consider giving it a star on GitHub!
 
@@ -712,6 +712,6 @@ If you find AMTD useful, please consider giving it a star on GitHub!
 
 ---
 
-**Made with ❤️ by the AMTD Team**
+**Made by the AMTD Team**
 
 [⬆ Back to Top](#amtd---automated-malware-target-detection)

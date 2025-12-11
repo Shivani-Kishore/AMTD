@@ -1,0 +1,50 @@
+AMTD SECURITY SCAN - THRESHOLD ALERT
+=====================================
+
+ALERT: VULNERABILITY THRESHOLDS EXCEEDED
+Application: {{ scan_info.application }}
+
+One or more vulnerability thresholds have been exceeded.
+IMMEDIATE ATTENTION REQUIRED!
+
+EXCEEDED THRESHOLDS
+===================
+
+{% for severity, data in exceeded_thresholds.items() %}
+{{ severity|upper }}:
+  Current Count: {{ data.count }}
+  Threshold: {{ data.threshold }}
+  Exceeded by: {{ data.count - data.threshold }}
+
+{% endfor %}
+
+OVERALL STATISTICS
+==================
+
+Critical: {{ statistics.critical }}
+High:     {{ statistics.high }}
+Medium:   {{ statistics.medium }}
+Low:      {{ statistics.low }}
+Info:     {{ statistics.info }}
+------------------------
+Total:    {{ statistics.total }}
+
+SCAN DETAILS
+============
+
+Application: {{ scan_info.application }}
+Scan ID: {{ scan_info.scan_id }}
+Scan Type: {{ scan_info.scan_type|upper }}
+Target URL: {{ scan_info.target_url }}
+
+RECOMMENDED ACTIONS
+===================
+
+1. Review the full security scan report
+2. Prioritize remediation of exceeded threshold vulnerabilities
+3. Update application threshold settings if needed
+4. Consider blocking deployment until issues are resolved
+
+---
+This is an automated alert from AMTD Security Scanner.
+Please do not reply to this email.

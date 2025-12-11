@@ -1,0 +1,31 @@
+AMTD SECURITY SCAN - FAILURE NOTIFICATION
+==========================================
+
+SCAN FAILED: {{ scan_info.application }}
+
+The security scan failed to complete.
+
+SCAN INFORMATION
+================
+
+Application: {{ scan_info.application }}
+Scan ID: {{ scan_info.scan_id }}
+Scan Type: {{ scan_info.scan_type|upper }}
+Target URL: {{ scan_info.target_url }}
+
+ERROR DETAILS
+=============
+
+{{ error_message }}
+
+RECOMMENDED ACTIONS
+===================
+
+1. Check the Jenkins build logs for more details
+2. Verify that the target application is accessible
+3. Ensure all required services are running
+4. Review scanner configuration and permissions
+
+---
+This is an automated notification from AMTD Security Scanner.
+Please do not reply to this email.

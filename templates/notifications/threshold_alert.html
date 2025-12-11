@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMTD Threshold Alert</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 5px 5px;
+        }
+        .alert-box {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .threshold-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        .threshold-table th,
+        .threshold-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .threshold-table th {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+        .exceeded {
+            background-color: #f8d7da;
+            font-weight: bold;
+        }
+        .info-table {
+            width: 100%;
+            margin: 20px 0;
+        }
+        .info-table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ALERT: Thresholds Exceeded</h1>
+        <h2>{{ scan_info.application }}</h2>
+    </div>
+
+    <div class="content">
+        <div class="alert-box">
+            <strong>Warning:</strong> One or more vulnerability thresholds have been exceeded for this application.
+            Immediate attention required.
+        </div>
+
+        <h3>Exceeded Thresholds</h3>
+        <table class="threshold-table">
+            <thead>
+                <tr>
+                    <th>Severity</th>
+                    <th>Count</th>
+                    <th>Threshold</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for severity, data in exceeded_thresholds.items() %}
+                <tr class="exceeded">
+                    <td>{{ severity|upper }}</td>
+                    <td>{{ data.count }}</td>
+                    <td>{{ data.threshold }}</td>
+                    <td>EXCEEDED by {{ data.count - data.threshold }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Overall Statistics</h3>
+        <table class="threshold-table">
+            <thead>
+                <tr>
+                    <th>Severity</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Critical</td>
+                    <td>{{ statistics.critical }}</td>
+                </tr>
+                <tr>
+                    <td>High</td>
+                    <td>{{ statistics.high }}</td>
+                </tr>
+                <tr>
+                    <td>Medium</td>
+                    <td>{{ statistics.medium }}</td>
+                </tr>
+                <tr>
+                    <td>Low</td>
+                    <td>{{ statistics.low }}</td>
+                </tr>
+                <tr>
+                    <td>Info</td>
+                    <td>{{ statistics.info }}</td>
+                </tr>
+                <tr style="font-weight: bold;">
+                    <td>Total</td>
+                    <td>{{ statistics.total }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Scan Details</h3>
+        <table class="info-table">
+            <tr>
+                <td>Application:</td>
+                <td>{{ scan_info.application }}</td>
+            </tr>
+            <tr>
+                <td>Scan ID:</td>
+                <td>{{ scan_info.scan_id }}</td>
+            </tr>
+            <tr>
+                <td>Scan Type:</td>
+                <td>{{ scan_info.scan_type|upper }}</td>
+            </tr>
+            <tr>
+                <td>Target URL:</td>
+                <td>{{ scan_info.target_url }}</td>
+            </tr>
+        </table>
+
+        <h3>Recommended Actions</h3>
+        <ul>
+            <li>Review the full security scan report</li>
+            <li>Prioritize remediation of exceeded threshold vulnerabilities</li>
+            <li>Update application threshold settings if needed</li>
+            <li>Consider blocking deployment until issues are resolved</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>This is an automated alert from AMTD Security Scanner</p>
+        <p>Please do not reply to this email</p>
+    </div>
+</body>
+</html>

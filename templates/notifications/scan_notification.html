@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMTD Security Scan Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: {{ severity_color }};
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 5px 5px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .critical { color: #dc3545; }
+        .high { color: #fd7e14; }
+        .medium { color: #ffc107; }
+        .low { color: #17a2b8; }
+        .info { color: #6c757d; }
+        .info-table {
+            width: 100%;
+            margin: 20px 0;
+        }
+        .info-table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Security Scan Complete</h1>
+        <h2>{{ scan_info.application }}</h2>
+    </div>
+
+    <div class="content">
+        <h3>Vulnerability Summary</h3>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number critical">{{ statistics.critical }}</div>
+                <div class="stat-label">Critical</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number high">{{ statistics.high }}</div>
+                <div class="stat-label">High</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number medium">{{ statistics.medium }}</div>
+                <div class="stat-label">Medium</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number low">{{ statistics.low }}</div>
+                <div class="stat-label">Low</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number info">{{ statistics.info }}</div>
+                <div class="stat-label">Info</div>
+            </div>
+        </div>
+
+        <h3>Scan Details</h3>
+        <table class="info-table">
+            <tr>
+                <td>Application:</td>
+                <td>{{ scan_info.application }}</td>
+            </tr>
+            <tr>
+                <td>Scan Type:</td>
+                <td>{{ scan_info.scan_type|upper }}</td>
+            </tr>
+            <tr>
+                <td>Target URL:</td>
+                <td>{{ scan_info.target_url }}</td>
+            </tr>
+            <tr>
+                <td>Scan ID:</td>
+                <td>{{ scan_info.scan_id }}</td>
+            </tr>
+            <tr>
+                <td>Total Issues:</td>
+                <td><strong>{{ statistics.total }}</strong></td>
+            </tr>
+        </table>
+
+        {% if report_url %}
+        <p style="text-align: center;">
+            <a href="{{ report_url }}" class="button">View Full Report</a>
+        </p>
+        {% endif %}
+
+        {% if statistics.critical > 0 %}
+        <div style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0;">
+            <strong>Action Required:</strong> This scan identified {{ statistics.critical }} critical vulnerabilities
+            that require immediate attention.
+        </div>
+        {% elif statistics.high > 0 %}
+        <div style="background-color: #fff3cd; border-left: 4px solid #fd7e14; padding: 15px; margin: 20px 0;">
+            <strong>High Priority:</strong> This scan identified {{ statistics.high }} high severity issues
+            that should be addressed promptly.
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        <p>This is an automated notification from AMTD Security Scanner</p>
+        <p>Please do not reply to this email</p>
+    </div>
+</body>
+</html>

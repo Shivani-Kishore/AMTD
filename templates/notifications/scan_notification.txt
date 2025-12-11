@@ -1,0 +1,45 @@
+AMTD SECURITY SCAN REPORT
+=========================
+
+Application: {{ scan_info.application }}
+Scan Type: {{ scan_info.scan_type|upper }}
+Target: {{ scan_info.target_url }}
+
+VULNERABILITY SUMMARY
+=====================
+
+Critical: {{ statistics.critical }}
+High:     {{ statistics.high }}
+Medium:   {{ statistics.medium }}
+Low:      {{ statistics.low }}
+Info:     {{ statistics.info }}
+------------------------
+Total:    {{ statistics.total }}
+
+SCAN DETAILS
+============
+
+Scan ID: {{ scan_info.scan_id }}
+Application: {{ scan_info.application }}
+Scan Type: {{ scan_info.scan_type|upper }}
+Target URL: {{ scan_info.target_url }}
+
+{% if report_url %}
+FULL REPORT
+===========
+
+View the complete report at:
+{{ report_url }}
+{% endif %}
+
+{% if statistics.critical > 0 %}
+ACTION REQUIRED:
+This scan identified {{ statistics.critical }} CRITICAL vulnerabilities that require immediate attention!
+{% elif statistics.high > 0 %}
+HIGH PRIORITY:
+This scan identified {{ statistics.high }} HIGH severity issues that should be addressed promptly.
+{% endif %}
+
+---
+This is an automated notification from AMTD Security Scanner.
+Please do not reply to this email.
